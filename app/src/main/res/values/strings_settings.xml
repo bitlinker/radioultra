@@ -1,0 +1,11 @@
+<resources>
+    <string name="pref_key_download_album_covers">pref_key_download_album_covers</string>
+    <string name="pref_key_download_album_covers_default">true</string>
+
+    <string name="pref_key_useragent_string">pref_key_useragent_string</string>
+    <string name="pref_key_useragent_string_default">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36</string>
+
+    <string name="pref_key_play_on_startup">pref_key_play_on_startup</string>
+    <string name="pref_key_play_on_startup_default">false</string>
+
+</resources>

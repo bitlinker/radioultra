@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:defaultValue="@string/pref_key_download_album_covers_default"
+        android:key="@string/pref_key_download_album_covers"
+        android:title="@string/fragment_settings_download_album_coverts_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="@string/pref_key_play_on_startup_default"
+        android:key="@string/pref_key_play_on_startup"
+        android:title="@string/fragment_settings_play_on_startup" />
+
+    <!--<EditTextPreference-->
+        <!--android:defaultValue="@string/pref_key_useragent_string_default"-->
+        <!--android:key="@string/pref_key_useragent_string"-->
+        <!--android:selectAllOnFocus="true"-->
+        <!--android:singleLine="true"-->
+        <!--android:title="@string/fragment_settings_custom_useragent_string" />-->
+
+    <!--<EditTextPreference-->
+        <!--android:defaultValue="5000"-->
+        <!--android:inputType="numberDecimal|numberSigned"-->
+        <!--android:key="edit_text_preference_1"-->
+        <!--android:selectAllOnFocus="true"-->
+        <!--android:singleLine="true"-->
+        <!--android:title="Buffering time" />-->
+
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@android:array/imProtocols"
+        android:entryValues="@android:array/imProtocols"
+        android:key="pref_theme"
+        android:title="Theme" />
+</PreferenceScreen>
