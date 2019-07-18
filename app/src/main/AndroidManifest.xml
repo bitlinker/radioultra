@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <meta-data
+        android:name="com.google.android.gms.car.application"
+        android:resource="@xml/automotive_app_desc" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -23,7 +27,15 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".data.notificationservice.NotificationService" />
+        <service android:name=".data.playerservice.PlayerService" />
+
+        <service
+            android:name=".data.playerservice.PlayerMediaBrowserService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
 
     </application>
 

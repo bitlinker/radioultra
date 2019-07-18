@@ -1,5 +1,6 @@
 package com.github.bitlinker.radioultra.presentation.history
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,9 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import com.github.bitlinker.radioultra.R
 import com.github.bitlinker.radioultra.databinding.FragmentHistoryListitemBinding
 import com.github.bitlinker.radioultra.domain.HistoryItem
+import com.github.bitlinker.radioultra.presentation.player.PlayerViewModel
 import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.scope.currentScope
 
 
 // TODO: date is optional
@@ -50,8 +53,13 @@ class HistoryFragment : Fragment(), BackListener {
         }
     }
 
-    private val vm: HistoryViewModel by viewModel()
     private val adapter = HistoryAdapter(this)
+    private lateinit var vm: HistoryViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        vm = activity!!.currentScope.viewModel<HistoryViewModel>(this).value
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<FragmentHistoryBinding>(inflater, R.layout.fragment_history, container, false)

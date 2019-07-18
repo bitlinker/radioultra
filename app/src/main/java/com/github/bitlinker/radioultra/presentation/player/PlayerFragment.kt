@@ -1,5 +1,6 @@
 package com.github.bitlinker.radioultra.presentation.player
 
+import android.content.Context
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +16,9 @@ import com.github.bitlinker.radioultra.domain.StreamInfo
 import com.github.bitlinker.radioultra.presentation.BackListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.scope.currentScope
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.named
 
 // TODO: on long click open shops?
 
@@ -63,13 +67,12 @@ fun setStreamInfoText(tv: TextView, streamInfo: StreamInfo?) {
 }
 
 class PlayerFragment : Fragment(), BackListener {
-    companion object {
-        fun newInstance(): PlayerFragment {
-            return PlayerFragment()
-        }
-    }
+    private lateinit var vm: PlayerViewModel
 
-    val vm: PlayerViewModel by viewModel()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        vm = activity!!.currentScope.viewModel<PlayerViewModel>(this).value
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding: FragmentPlayerBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_player, container, false)

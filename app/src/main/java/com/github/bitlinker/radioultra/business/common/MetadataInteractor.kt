@@ -1,6 +1,6 @@
 package com.github.bitlinker.radioultra.business.common
 
-import com.github.bitlinker.radioultra.data.player.PlayerRepository
+import com.github.bitlinker.radioultra.data.player.PlayerWrapper
 import com.github.bitlinker.radioultra.data.radiostreams.RadioMetadataRepository
 import com.github.bitlinker.radioultra.domain.TrackMetadata
 import io.reactivex.Maybe
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 private const val STOPPED_METADATA_UPDATE_INTERVAL = 30000L
 
 class MetadataInteractor(private val radioMetadataRepository: RadioMetadataRepository,
-                         private val playerRepository: PlayerRepository) {
+                         private val playerWrapper: PlayerWrapper) {
 
     fun getCurrentTrackMetadata(): Observable<TrackMetadata> {
         // TODO: update metadata when icy cheanges, but at least every STOPPED_METADATA_UPDATE_INTERVAL
@@ -34,7 +34,7 @@ class MetadataInteractor(private val radioMetadataRepository: RadioMetadataRepos
     }
 
     private fun playerMetadataObservable(): Observable<Long> {
-        return playerRepository.getStreamMetadata()
+        return playerWrapper.getStreamMetadata()
                 .doOnNext { Timber.d("Player metadata update: %s", it) }
                 .map { -1L }
     }

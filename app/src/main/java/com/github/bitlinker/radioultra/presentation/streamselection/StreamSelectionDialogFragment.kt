@@ -1,6 +1,7 @@
 package com.github.bitlinker.radioultra.presentation.streamselection
 
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -9,14 +10,22 @@ import androidx.navigation.fragment.navArgs
 import com.github.bitlinker.radioultra.R
 import com.github.bitlinker.radioultra.domain.RadioStream
 import com.github.bitlinker.radioultra.presentation.BackListener
+import com.github.bitlinker.radioultra.presentation.history.HistoryViewModel
 import com.github.bitlinker.radioultra.presentation.trackview.TrackViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.scope.currentScope
 import org.koin.core.parameter.parametersOf
 
 
 class StreamSelectionDialogFragment() : DialogFragment(), BackListener {
     private val args: StreamSelectionDialogFragmentArgs by navArgs()
-    private val vm: StreamSelectionViewModel by viewModel { parametersOf(args.args) }
+
+    private lateinit var vm: StreamSelectionViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        vm = activity!!.currentScope.viewModel<StreamSelectionViewModel>(this, parameters = { parametersOf(args.args) }).value
+    }
 
     private fun streamToTitle(stream: RadioStream): String {
         return getString(R.string.stream_name, stream.bitrate, stream.id)

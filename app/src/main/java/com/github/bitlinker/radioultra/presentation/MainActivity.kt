@@ -3,7 +3,6 @@ package com.github.bitlinker.radioultra.presentation
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -11,22 +10,26 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigator
 import com.github.bitlinker.radioultra.R
-import com.github.bitlinker.radioultra.business.common.StartupInteractor
-import com.github.bitlinker.radioultra.business.notification.NotificationServiceInteractor
-import com.github.bitlinker.radioultra.data.radiostreams.RadioMetadataRepository
+import com.github.bitlinker.radioultra.business.notification.PlayerServiceController
 import com.github.bitlinker.radioultra.presentation.navigation.MainNavigator
 import com.github.bitlinker.radioultra.presentation.navigation.MainNavigatorMgr
 import org.koin.android.ext.android.inject
+import org.koin.androidx.scope.currentScope
 import timber.log.Timber
 
 // TODO: pass navigation command to the fragment itself and navigate there with extras?
 class MainActivity : AppCompatActivity(), MainNavigator {
-    val navMgr: MainNavigatorMgr by inject()
+    // Need to inject something from current scope to open it!
+    val navMgr: MainNavigatorMgr by currentScope.inject()
 
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
 
+    // TODO
+    // Gets or creates scope for the current lifecycle owner named by classname, but with separate instance for each object
+    //private val interactor: PlayerServiceController     by currentScope.inject()
+
     // DBG
-    val notificationServiceInteractor: NotificationServiceInteractor by inject()
+    val playerServiceController: PlayerServiceController by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,14 +41,16 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         // TODO: use settings flag
         //window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) //, not here
 
-        notificationServiceInteractor.start()
+        playerServiceController.start()
     }
 
     private val currentFragment: BackListener?
         get() = supportFragmentManager.findFragmentById(R.id.container) as? BackListener
 
+    // TODO: bind to player service during start/stop using  viewmodel/interactor?
+
     override fun onDestroy() {
-        Timber.d("onDestroy");
+        Timber.d("dispose");
         navMgr.navigator = null
         super.onDestroy()
     }

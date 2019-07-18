@@ -1,4 +1,4 @@
-package com.github.bitlinker.radioultra.data.audiofocus
+package com.github.bitlinker.radioultra.data.wrappers
 
 import android.content.Context
 import android.media.AudioManager
@@ -9,7 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import java.lang.IllegalStateException
 
-class AudioFocusRepository(context: Context) {
+class AudioFocusWrapper(context: Context) {
     enum class State {
         GAIN,
         LOSS,

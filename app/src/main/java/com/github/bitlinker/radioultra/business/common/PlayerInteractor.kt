@@ -1,9 +1,9 @@
 package com.github.bitlinker.radioultra.business.common
 
 import com.github.bitlinker.radioultra.business.player.StreamSelectionInteractor
-import com.github.bitlinker.radioultra.data.player.PlayerRepository
+import com.github.bitlinker.radioultra.data.player.PlayerWrapper
 import com.github.bitlinker.radioultra.data.settings.SettingsRepository
-import com.github.bitlinker.radioultra.data.wakelock.WakelockRepository
+import com.github.bitlinker.radioultra.data.wrappers.WakelockWrapper
 import com.github.bitlinker.radioultra.domain.RadioStream
 import com.github.bitlinker.radioultra.domain.TrackMetadata
 import com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionArgs
@@ -16,8 +16,8 @@ import io.reactivex.functions.BiFunction
 // TODO: separate playerInteractor & playerFragmentInteractor
 class PlayerInteractor(private val streamSelectionInteractor: StreamSelectionInteractor,
                        private val metadataInteractor: MetadataInteractor,
-                       private val playerRepository: PlayerRepository,
-                       private val wakelockRepository: WakelockRepository,
+                       private val playerWrapper: PlayerWrapper,
+                       private val wakelockWrapper: WakelockWrapper,
                        private val settingsRepository: SettingsRepository) {
 
     // TODO: wakelock with player
@@ -32,17 +32,17 @@ class PlayerInteractor(private val streamSelectionInteractor: StreamSelectionInt
     }
 
     fun play(stream: RadioStream): Completable {
-        return playerRepository.play(stream)
-        //wakelockRepository.aquirePlayerLock()
+        return playerWrapper.play(stream)
+        //wakelockWrapper.aquirePlayerLock()
     }
 
     fun stop(): Completable {
-        return playerRepository.stop()
+        return playerWrapper.stop()
     }
 
-    fun getState() = playerRepository.getPlayerStatus()
+    fun getState() = playerWrapper.getPlayerStatus()
 
-    fun getCurrentStreamInfo() = playerRepository.getStreamInfo()
+    fun getCurrentStreamInfo() = playerWrapper.getStreamInfo()
 
     private fun getCurrentStream() = streamSelectionInteractor.getCurStream()
 

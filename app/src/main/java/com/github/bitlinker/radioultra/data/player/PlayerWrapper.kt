@@ -24,8 +24,8 @@ import timber.log.Timber
 import java.io.Closeable
 
 
-class PlayerRepository(context: Context,
-                       schedulerProvider: SchedulerProvider) : Closeable {
+class PlayerWrapper(context: Context,
+                    schedulerProvider: SchedulerProvider) : Closeable {
     private val player: SimpleExoPlayer
     private val dataSourceFactory: DataSource.Factory
     private val extractorsFactory: ExtractorsFactory

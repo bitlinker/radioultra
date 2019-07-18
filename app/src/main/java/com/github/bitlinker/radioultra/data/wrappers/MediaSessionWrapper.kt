@@ -1,6 +1,7 @@
-package com.github.bitlinker.radioultra.data.mediasession
+package com.github.bitlinker.radioultra.data.wrappers
 
 import android.content.Context
+import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -8,7 +9,13 @@ import com.github.bitlinker.radioultra.domain.PlayerStatus
 import com.github.bitlinker.radioultra.domain.TrackMetadata
 import java.io.Closeable
 
-class MediaSessionRepository(private val context: Context) : Closeable {
+
+// TODO: need token here. Token can be serialized to bundle only
+// Token is from mediasession
+// Mediasession is bound to player service scope? or global scope
+
+// TODO: player scope!
+class MediaSessionWrapper(private val context: Context) : Closeable {
     // TODO: create media session explicitly
     private val mediaSessionTag = "${context.packageName}_MediaSession"
 
@@ -38,8 +45,14 @@ class MediaSessionRepository(private val context: Context) : Closeable {
         //mediaSession.setMediaButtonReceiver()
         //mediaSession.setSessionActivity()
 
+
         // Extrnal controls callback
         mediaSession.setCallback(object : MediaSessionCompat.Callback() {
+            override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+                super.onPlayFromMediaId(mediaId, extras)
+                // TODO: this will be called from mediabrowser service
+            }
+
             override fun onPlay() {
                 super.onPlay()
             }
@@ -88,26 +101,7 @@ class MediaSessionRepository(private val context: Context) : Closeable {
         return mediaSession.sessionToken
     }
 
-    // TODO: call me
     override fun close() {
         mediaSession.release()
     }
 }
-
-// TODO: MediaBrowserService too?
-// Need to implement MediaBrowserService()
-
-//class PlayerMediaBrowserService : MediaBrowserService() {
-//    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowser.MediaItem>>) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//
-//    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//
-//    fun sessionFun() {
-//
-//    }
-//
-//}
