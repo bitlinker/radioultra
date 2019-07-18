@@ -6,8 +6,10 @@ import com.github.bitlinker.radioultra.data.settings.SettingsRepository
 import com.github.bitlinker.radioultra.data.wakelock.WakelockRepository
 import com.github.bitlinker.radioultra.domain.RadioStream
 import com.github.bitlinker.radioultra.domain.TrackMetadata
+import com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionArgs
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 
 
@@ -25,7 +27,7 @@ class PlayerInteractor(private val streamSelectionInteractor: StreamSelectionInt
     fun play(): Completable {
         // TODO: update useragent if needed
         //settingsRepository.userAgentStringObservable()
-        return streamSelectionInteractor.getCurStream()
+        return getCurrentStream()
                 .flatMapCompletable { play(it) }
     }
 
@@ -41,6 +43,16 @@ class PlayerInteractor(private val streamSelectionInteractor: StreamSelectionInt
     fun getState() = playerRepository.getPlayerStatus()
 
     fun getCurrentStreamInfo() = playerRepository.getStreamInfo()
+
+    private fun getCurrentStream() = streamSelectionInteractor.getCurStream()
+
+    fun getStreamSelectionArgs(): Single<StreamSelectionArgs> {
+        return Single.zip(
+                streamSelectionInteractor.getStreams().toList(),
+                getCurrentStream(),
+                BiFunction { list, current -> StreamSelectionArgs(list, current) }
+        )
+    }
 
     fun getMetadata(): Observable<TrackMetadata> {
         return Observable.combineLatest(

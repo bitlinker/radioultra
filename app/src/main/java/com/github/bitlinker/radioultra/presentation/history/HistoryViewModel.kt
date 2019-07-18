@@ -9,7 +9,6 @@ import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 
 // TODO: offline history & delete all feature?
-// TODO: can open item in youtube, itunes, google, etc
 class HistoryViewModel(private val navigator: HistoryNavigator,
                        private val historyFragmentInteractor: HistoryFragmentInteractor,
                        private val schedulerProvider: SchedulerProvider) : ViewModel() {
@@ -26,7 +25,7 @@ class HistoryViewModel(private val navigator: HistoryNavigator,
     }
 
     fun onBackPressed() {
-        navigator.onBackPressed()
+        navigator.navigateBack()
     }
 
     fun doRefresh() {
@@ -46,6 +45,10 @@ class HistoryViewModel(private val navigator: HistoryNavigator,
     }
 
     fun onRefresh() = doRefresh()
+
+    fun onItemClicked(item: HistoryItem) {
+        navigator.navigateToItem(item.metadata)
+    }
 
     override fun onCleared() {
         disposable.clear()

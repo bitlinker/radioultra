@@ -18,7 +18,18 @@
     <string name="fragment_player_streaminfo_samplerate">%.1fkHz</string>
     <string name="fragment_player_streaminfo_unknown">Unknown</string>
 
+    <string name="fragment_track_view_title">Track info</string>
+    <string name="fragment_track_view_image_cover">Album cover image</string>
+    <string name="fragment_track_view_icon_google_play">Google Play Music</string>
+    <string name="fragment_track_view_icon_youtube">YouTube</string>
+    <string name="fragment_track_view_icon_itunes">ITunes</string>
+    <string name="fragment_track_view_track">Track:</string>
+    <string name="fragment_track_view_album">Album:</string>
+    <string name="fragment_track_view_artist">Artist:</string>
+    <string name="fragment_track_view_stream_title">Title:</string>
+
     <string name="error_server_io_error">Server unavailable</string>
     <string name="error_playback_error">Playback error</string>
     <string name="error_generic">Generic error</string>
+
 </resources>

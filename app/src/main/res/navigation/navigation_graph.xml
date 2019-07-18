@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
     app:startDestination="@id/playerFragment">
 
@@ -11,24 +10,63 @@
         android:label="PlayerFragment">
         <action
             android:id="@+id/action_playerFragment_to_historyFragment"
-            app:destination="@id/historyFragment" />
+            app:destination="@id/historyFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_playerFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_playerFragment_to_streamSelectionDialogFragment"
-            app:destination="@id/streamSelectionDialogFragment" />
+            app:destination="@id/streamSelectionDialogFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_playerFragment_to_trackViewFragment"
+            app:destination="@id/trackViewFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.github.bitlinker.radioultra.presentation.history.HistoryFragment"
-        android:label="HistoryFragment" />
+        android:label="HistoryFragment">
+        <action
+            android:id="@+id/action_historyFragment_to_trackViewFragment"
+            app:destination="@+id/trackViewFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.github.bitlinker.radioultra.presentation.settings.SettingsFragment"
         android:label="SettingsFragment" />
     <dialog
         android:id="@+id/streamSelectionDialogFragment"
-        android:name="com.github.bitlinker.radioultra.presentation.player.StreamSelectionDialogFragment"
-        android:label="StreamSelectionDialogFragment" />
+        android:name="com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionDialogFragment"
+        android:label="StreamSelectionDialogFragment" >
+        <argument
+            android:name="args"
+            app:argType="com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionArgs" />
+    </dialog>
+    <fragment
+        android:id="@+id/trackViewFragment"
+        android:name="com.github.bitlinker.radioultra.presentation.trackview.TrackViewFragment"
+        android:label="TrackItemFragment">
+        <argument
+            android:name="item"
+            app:argType="com.github.bitlinker.radioultra.domain.TrackMetadata" />
+    </fragment>
 </navigation>

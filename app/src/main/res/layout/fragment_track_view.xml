@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.github.bitlinker.radioultra.presentation.trackview.TrackViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gContentBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gContentStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gContentEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
+            app:navigationOnClickListener="@{() -> model.onBackPressed()}"
+            app:title="@string/fragment_track_view_title" />
+
+        <ImageView
+            android:id="@+id/ivCover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="28dp"
+            android:contentDescription="@string/fragment_track_view_image_cover"
+            android:elevation="10dp"
+            android:transitionName="@string/transition_cover_image"
+            app:coverImageUrl="@{model.coverUrl}"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/gContentEnd"
+            app:layout_constraintStart_toStartOf="@+id/gContentStart"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintWidth_percent="0.75"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <View
+            android:id="@+id/separator1"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginTop="32dp"
+            android:background="@color/secondaryColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivCover" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/metadataBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="tvArtistTitle,tvTrackTitle,tvAlbumTitle,tvStreamTitle"
+            tools:layout_editor_absoluteX="60dp" />
+
+        <TextView
+            android:id="@+id/tvStreamTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/fragment_track_view_stream_title"
+            app:hideIfEmpty="@{model.stream}"
+            app:layout_constraintStart_toStartOf="@+id/gContentStart"
+            app:layout_constraintTop_toBottomOf="@+id/separator1" />
+
+        <TextView
+            android:id="@+id/tvStream"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{model.stream}"
+            app:hideIfEmpty="@{model.stream}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvStreamTitle"
+            app:layout_constraintEnd_toStartOf="@+id/gContentEnd"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/metadataBarrier"
+            tools:text="The stream title" />
+
+        <TextView
+            android:id="@+id/tvArtistTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/fragment_track_view_artist"
+            app:hideIfEmpty="@{model.artist}"
+            app:layout_constraintStart_toStartOf="@+id/gContentStart"
+            app:layout_constraintTop_toBottomOf="@+id/tvStreamTitle" />
+
+        <TextView
+            android:id="@+id/tvArtist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{model.artist}"
+            app:hideIfEmpty="@{model.artist}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvArtistTitle"
+            app:layout_constraintEnd_toStartOf="@+id/gContentEnd"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/metadataBarrier"
+            tools:text="The Artist" />
+
+        <TextView
+            android:id="@+id/tvTrackTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/fragment_track_view_track"
+            app:hideIfEmpty="@{model.title}"
+            app:layout_constraintStart_toStartOf="@+id/gContentStart"
+            app:layout_constraintTop_toBottomOf="@+id/tvArtistTitle" />
+
+        <TextView
+            android:id="@+id/tvTrack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{model.title}"
+            app:hideIfEmpty="@{model.title}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvTrackTitle"
+            app:layout_constraintEnd_toStartOf="@+id/gContentEnd"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/metadataBarrier"
+            tools:text="The track" />
+
+        <TextView
+            android:id="@+id/tvAlbumTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/fragment_track_view_album"
+            app:hideIfEmpty="@{model.album}"
+            app:layout_constraintStart_toStartOf="@+id/gContentStart"
+            app:layout_constraintTop_toBottomOf="@+id/tvTrackTitle" />
+
+        <TextView
+            android:id="@+id/tvAlbum"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{model.album}"
+            app:hideIfEmpty="@{model.album}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvAlbumTitle"
+            app:layout_constraintEnd_toStartOf="@+id/gContentEnd"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/metadataBarrier"
+            tools:text="The album" />
+
+        <View
+            android:id="@+id/separator2"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/secondaryColor"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/gContentBottom"
+            app:layout_constraintStart_toStartOf="@+id/gContentStart">
+
+            <ImageButton
+                android:id="@+id/btnGoogle"
+                android:layout_width="@dimen/fragment_track_view_external_icon_size"
+                android:layout_height="@dimen/fragment_track_view_external_icon_size"
+                android:layout_margin="@dimen/fragment_track_view_external_icon_margin"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/fragment_track_view_icon_google_play"
+                android:onClick="@{(v) -> model.onGoogleMusicClicked()}"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_google_play_logo" />
+
+            <ImageButton
+                android:id="@+id/btnYouTube"
+                android:layout_width="@dimen/fragment_track_view_external_icon_size"
+                android:layout_height="@dimen/fragment_track_view_external_icon_size"
+                android:layout_margin="@dimen/fragment_track_view_external_icon_margin"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/fragment_track_view_icon_youtube"
+                android:onClick="@{(v) -> model.onYouTubeClicked()}"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_youtube_logo" />
+
+            <ImageButton
+                android:id="@+id/btnITunes"
+                android:layout_width="@dimen/fragment_track_view_external_icon_size"
+                android:layout_height="@dimen/fragment_track_view_external_icon_size"
+                android:layout_margin="@dimen/fragment_track_view_external_icon_margin"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/fragment_track_view_icon_itunes"
+                android:onClick="@{(v) -> model.onITunesClicked()}"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_itunes_logo" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

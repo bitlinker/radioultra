@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
@@ -15,30 +14,10 @@ import com.github.bitlinker.radioultra.databinding.FragmentPlayerBinding
 import com.github.bitlinker.radioultra.domain.StreamInfo
 import com.github.bitlinker.radioultra.presentation.BackListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.squareup.picasso.Picasso
 import org.koin.android.viewmodel.ext.android.viewModel
 
 // TODO: on long click open shops?
 
-// TODO: inject picasso here
-@BindingAdapter("imageUrl")
-fun loadImage(view: ImageView, url: String?) {
-    val picasso = Picasso.get()
-
-    // Dbg
-    picasso.isLoggingEnabled = true
-    picasso.setIndicatorsEnabled(true)
-
-    if (url == null) {
-        picasso.load(R.drawable.ultralogo).into(view)
-    } else {
-        picasso
-                .load(url)
-                .placeholder(R.drawable.ultralogo)
-                .error(R.drawable.ultralogo)
-                .into(view)
-    }
-}
 
 @BindingAdapter("animatedButtonState")
 fun setPlayButtonState(fab: FloatingActionButton, state: PlayButtonState) {

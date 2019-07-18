@@ -1,4 +1,4 @@
-package com.github.bitlinker.radioultra.presentation.player
+package com.github.bitlinker.radioultra.presentation.streamselection
 
 import androidx.lifecycle.ViewModel
 import com.github.bitlinker.radioultra.business.player.StreamSelectionInteractor
@@ -8,18 +8,18 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 
 // TODO: custom navigator?
 class StreamSelectionViewModel(private val navigator: MainNavigator,
-                               private val interactor: StreamSelectionInteractor) : ViewModel() {
+                               private val interactor: StreamSelectionInteractor,
+                               private val args: StreamSelectionArgs
+) : ViewModel() {
     var streams: List<RadioStream> = emptyList()
         private set
     var currentStream = -1
         private set
 
     init {
-        // TODO: this will block ui! Find a better solution
-        streams = interactor.getStreams().toList().blockingGet()
-        var currentStreamObj = interactor.getCurStream().blockingGet()
+        streams = args.streams
         streams.forEachIndexed { i, stream ->
-            if (stream.id == currentStreamObj.id) {
+            if (stream.id == args.selectedStream.id) {
                 currentStream = i
                 return@forEachIndexed
             }

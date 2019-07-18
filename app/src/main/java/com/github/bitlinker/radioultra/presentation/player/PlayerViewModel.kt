@@ -11,6 +11,7 @@ import com.github.bitlinker.radioultra.business.common.PlayerInteractor
 import com.github.bitlinker.radioultra.domain.PlayerStatus
 import com.github.bitlinker.radioultra.domain.StreamInfo
 import com.github.bitlinker.radioultra.domain.TrackMetadata
+import com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionArgs
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
@@ -92,7 +93,15 @@ class PlayerViewModel(private val navigator: PlayerNavigator,
 
     fun onHistoryClicked() = navigator.navigateToHistory()
 
-    fun onChooseStreamClicked() = navigator.showChooseStreamDialog()
+    fun onChooseStreamClicked() {
+        disposable.add(
+                interactor.getStreamSelectionArgs()
+                        .subscribe(
+                                { navigator.showChooseStreamDialog(it) },
+                                { showError(it) }
+                        )
+        )
+    }
 
     fun onMenuItemClicked(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_settings) {
@@ -102,8 +111,9 @@ class PlayerViewModel(private val navigator: PlayerNavigator,
         return false
     }
 
-    fun onBackPressed() {
-        navigator.onBackPressed()
+    fun onCoverClicked() {
+        val value = metadata.value
+        if (value != null) navigator.navigateToTrackInfo(value)
     }
 
     fun onPlayStopClicked() {
@@ -116,6 +126,10 @@ class PlayerViewModel(private val navigator: PlayerNavigator,
             disposable.add(interactor.stop().subscribe()) // TODO: disposable, error-handling
         }
         playButtonState.postValue(newState)
+    }
+
+    fun onBackPressed() {
+        navigator.onBackPressed()
     }
 
     override fun onCleared() {

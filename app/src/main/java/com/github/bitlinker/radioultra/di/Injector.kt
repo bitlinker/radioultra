@@ -16,6 +16,7 @@ import com.github.bitlinker.radioultra.data.schedulers.SchedulerProvider
 import com.github.bitlinker.radioultra.data.settings.SettingsRepository
 import com.github.bitlinker.radioultra.data.storage.PersistentStorage
 import com.github.bitlinker.radioultra.data.wakelock.WakelockRepository
+import com.github.bitlinker.radioultra.domain.TrackMetadata
 import com.github.bitlinker.radioultra.presentation.history.HistoryNavigator
 import com.github.bitlinker.radioultra.presentation.history.HistoryViewModel
 import com.github.bitlinker.radioultra.presentation.navigation.MainNavigator
@@ -23,9 +24,12 @@ import com.github.bitlinker.radioultra.presentation.navigation.MainNavigatorMgr
 import com.github.bitlinker.radioultra.presentation.notification.NotificationPresenter
 import com.github.bitlinker.radioultra.presentation.player.PlayerNavigator
 import com.github.bitlinker.radioultra.presentation.player.PlayerViewModel
-import com.github.bitlinker.radioultra.presentation.player.StreamSelectionViewModel
+import com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionViewModel
 import com.github.bitlinker.radioultra.presentation.settings.SettingsNavigator
 import com.github.bitlinker.radioultra.presentation.settings.SettingsViewModel
+import com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionArgs
+import com.github.bitlinker.radioultra.presentation.trackview.TrackViewNavigator
+import com.github.bitlinker.radioultra.presentation.trackview.TrackViewModel
 import com.squareup.moshi.Moshi
 import com.squareup.picasso.Picasso
 import org.koin.android.ext.koin.androidContext
@@ -72,8 +76,10 @@ class Injector private constructor() {
         single { PlayerNavigator(get()) }
         single { PlayerInteractor(get(), get(), get(), get(), get()) }
         factory { PlayerViewModel(get(), get(), get(), get<SchedulerProvider>().ui()) }
+
+        // Stream selection dialog
         single { StreamSelectionInteractor(get(), get(), get()) }
-        factory { StreamSelectionViewModel(get(), get()) }
+        factory { (args: StreamSelectionArgs) -> StreamSelectionViewModel(get(), get(), args) }
 
         // Settings UI
         single { SettingsNavigator(get()) }
@@ -84,12 +90,15 @@ class Injector private constructor() {
         single { HistoryNavigator(get()) }
         factory { HistoryViewModel(get(), get(), get()) }
 
+        // Track item UI
+        single { TrackViewNavigator(get()) }
+        factory { (item: TrackMetadata) -> TrackViewModel(get(), item) }
+
         // Notification UI
         single { NotificationPresenter(get(), get()) }
         single { NotificationServiceInteractor(get(), get(), get(), get()) }
 
         // TODO: confiure scopes?
-
 
     }
 

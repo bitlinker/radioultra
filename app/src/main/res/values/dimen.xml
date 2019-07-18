@@ -2,4 +2,8 @@
 <resources>
     <dimen name="fragment_player_btn_play_size">64dp</dimen>
     <dimen name="fragment_player_btn_side_size">48dp</dimen>
+
+    <dimen name="fragment_track_view_external_icon_size">32dp</dimen>
+    <dimen name="fragment_track_view_external_icon_margin">8dp</dimen>
+    <dimen name="fragment_track_view_cover_size">200dp</dimen>
 </resources>
