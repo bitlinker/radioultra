@@ -4,12 +4,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.github.bitlinker.radioultra.business.common.PlayerInteractor
-import com.github.bitlinker.radioultra.data.wrappers.AudioFocusWrapper
-import com.github.bitlinker.radioultra.data.wrappers.MediaSessionWrapper
 import com.github.bitlinker.radioultra.data.playerservice.PlayerService
-import com.github.bitlinker.radioultra.data.wrappers.NoisyBroadcastWrapper
-import com.github.bitlinker.radioultra.data.wrappers.WakelockWrapper
+import com.github.bitlinker.radioultra.data.wrappers.*
 import com.github.bitlinker.radioultra.presentation.notification.NotificationPresenter
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import java.lang.IllegalStateException
@@ -24,31 +22,74 @@ class PlayerServiceController(
         private val context: Context, // TODO: named context as service
         private val mediaSessionWrapper: MediaSessionWrapper,
         private val audioFocusWrapper: AudioFocusWrapper,
+        private val uiScheduler: Scheduler,
         private val wakelockWrapper: WakelockWrapper,
-        private val noisyBroadcastWrapper: NoisyBroadcastWrapper,
         private val notificationPresenter: NotificationPresenter,
         private val playerInteractor: PlayerInteractor) {
 
     private val disposable = CompositeDisposable()
     private val intent = Intent(context, PlayerService::class.java)
 
+
+    // Player hierarchy:
+    // - Player repo (player scope)
+    // - HostingRadio repo
+    // - Current stream repo
+    // - Settings repo
+
+    // - Player interactor: (player scope)
+    // -- play / choose and save stream
+    // -- updateBufferSizeCompletable
+    // -- updateUserAgentCompletable
+    // -- composite metadata observable (take toggle flag and cover from setting observable) - separate interactor?
+    // -- leave simple metadata for notifications?
+
+    // - PlayConditions interactor:
+    // -- handles start/stop audiofocus & wakelock & noisy logic (Completable?)
+
+    // - History interactor uses HostingRadio repo
+
+    // - MediaSession interactor: (player scope)
+    // -- updates mediasession according to player state observable
+
+    // - Notification interactor:
+    // -- updates notification according to player state (or mediasession state?)
+    // -- starts/stops with player service
+
+    // --MainActivity interactor:
+    // -- handles play on startup
+    // -- binds to service
+
+    // - Player interactor is player scoped, so some binding is required for UI! get interactor? interface?
+
     init {
         notificationPresenter.startForeground(playerService, mediaSessionWrapper.getToken())
 
+        // TODO: move out business logic as far as possible
         // TODO: work with the player interactor or repo here???
         disposable.add(playerInteractor.getMetadata()
                 .subscribe { mediaSessionWrapper.setMetadata(it) } // TODO: handle error
         )
 
+        // TODO: object or function?
         disposable.add(
                 wakelockWrapper.aquirePlayerLock(context.packageName + "_playerWakeLock")
                         .subscribe() // TODO: handle error
         )
 
         disposable.add(
-                noisyBroadcastWrapper.noisyBroadcastObservable()
+                noisyBroadcastReceiverObservable(context, uiScheduler)
                         .subscribe()  // TODO: handle error, handle value
         )
+
+
+        // TODO: update locks & notification
+//        disposable.add(
+//                playerInteractor.getState()
+//                        // TODO: scheduler?
+//                        .flatMap { t -> t.state.isPlaying() }
+//                        .subscribe()
+//        )
 
         //mediaSessionWrapper.setMetadata();
         //mediaSessionWrapper.setPlaybackState()

@@ -24,6 +24,20 @@ import timber.log.Timber
 import java.io.Closeable
 
 
+// TODO: interface:
+// Rename to repository
+// play(stream),
+// stop
+// pause
+// state (+paused?) observable
+// icy metdata observable
+// stream params observable
+// set useragent
+// set buffer size
+// sync api? easier
+// ...
+// Almost ok
+
 class PlayerWrapper(context: Context,
                     schedulerProvider: SchedulerProvider) : Closeable {
     private val player: SimpleExoPlayer
@@ -95,6 +109,12 @@ class PlayerWrapper(context: Context,
                 }
             }
         }
+    }
+
+    private fun recreatePlayer() {
+        // TODO: subj
+        val b = BehaviorSubject.create<Boolean>()
+        b.value
     }
 
     private fun parseStatus(playWhenReady: Boolean, playbackState: Int, playbackError: ExoPlaybackException?) {

@@ -1,15 +1,13 @@
 package com.github.bitlinker.radioultra.data.wrappers
 
+import android.content.Context
 import android.content.IntentFilter
 import android.media.AudioManager
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 
-
-class NoisyBroadcastWrapper(private val broadcastReceiverWrapper: BroadcastReceiverWrapper) {
-
-    fun noisyBroadcastObservable(): Observable<Boolean> {
-        return broadcastReceiverWrapper.broadcastReceiverObservable(IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
-                .filter { AudioManager.ACTION_AUDIO_BECOMING_NOISY == it.action }
-                .map { true }
-    }
+fun noisyBroadcastReceiverObservable(context: Context, uiScheduler: Scheduler): Observable<Boolean> {
+    return broadcastReceiverObservable(context, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY), uiScheduler)
+            .filter { AudioManager.ACTION_AUDIO_BECOMING_NOISY == it.action }
+            .map { true }
 }
