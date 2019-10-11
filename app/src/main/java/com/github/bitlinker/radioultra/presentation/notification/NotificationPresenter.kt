@@ -41,7 +41,7 @@ class NotificationPresenter(private val context: Context,
             val channel = NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
                     context.getString(R.string.notification_player_channel_name),
-                    NotificationManager.IMPORTANCE_NONE
+                    NotificationManager.IMPORTANCE_DEFAULT
             )
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             channel.description = context.getString(R.string.notification_player_channel_description)
