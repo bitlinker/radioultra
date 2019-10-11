@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.8" />
+            app:layout_constraintGuide_percent="@dimen/fragment_player_bottom_bar_size_fraction" />
 
         <View
             android:id="@+id/bgView"
@@ -54,13 +54,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:focusable="true"
             android:elevation="10dp"
+            android:focusable="true"
             android:onClick="@{(v) -> model.onPlayStopClicked()}"
             android:src="@drawable/play_to_stop_anim"
             app:fabCustomSize="@dimen/fragment_player_btn_play_size"
             app:fabSize="auto"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvStreamStatus"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -72,18 +72,16 @@
             android:layout_width="@dimen/fragment_player_btn_side_size"
             android:layout_height="@dimen/fragment_player_btn_side_size"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:onClick="@{(v) -> model.onHistoryClicked()}"
             android:scaleType="fitXY"
             android:tint="@color/secondaryColor"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
             app:layout_constraintEnd_toStartOf="@+id/btnPlay"
             app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/btnPlay"
             app:srcCompat="@drawable/ic_history_black_24dp" />
 
         <ImageButton
@@ -91,18 +89,16 @@
             android:layout_width="@dimen/fragment_player_btn_side_size"
             android:layout_height="@dimen/fragment_player_btn_side_size"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:onClick="@{(v) -> model.onChooseStreamClicked()}"
             android:scaleType="fitXY"
             android:tint="@color/secondaryColor"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toEndOf="@+id/btnPlay"
-            app:layout_constraintTop_toTopOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/btnPlay"
             app:srcCompat="@drawable/ic_queue_music_black_24dp" />
 
         <TextView
@@ -114,13 +110,15 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text='@{model.title ?? ""}'
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivCover"
+            app:layout_constraintVertical_bias="0.0"
             tools:text="The title - The album" />
 
         <TextView
-            android:id="@+id/txtAlbum"
+            android:id="@+id/tvAlbumArtist"
             style="@style/PlayerTrackArtistTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -131,27 +129,29 @@
             app:layout_constraintBottom_toTopOf="@+id/ivCover"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintVertical_bias="1.0"
             tools:text="Artist" />
 
         <ImageView
             android:id="@+id/ivCover"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="48dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:adjustViewBounds="true"
-            android:elevation="10dp"
+            android:elevation="16dp"
+            android:outlineProvider="bounds"
+            android:onClick="@{(v) -> model.onCoverClicked()}"
             android:scaleType="fitCenter"
             android:transitionName="@string/transition_cover_image"
-            app:layout_constraintBottom_toBottomOf="@+id/guideline"
-            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintBottom_toTopOf="@+id/txtTitle"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            android:onClick="@{(v) -> model.onCoverClicked()}"
+            app:layout_constraintTop_toBottomOf="@+id/tvAlbumArtist"
             tools:coverImageUrl="@{model.coverUrl}"
             tools:srcCompat="@drawable/ultralogo" />
 
@@ -167,7 +167,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/bgView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnPlay"
             app:layout_constraintVertical_bias="1.0"
             tools:streamInfoText="@{model.streamInfo}"
             tools:text="Playing (32kbps Stereo)" />

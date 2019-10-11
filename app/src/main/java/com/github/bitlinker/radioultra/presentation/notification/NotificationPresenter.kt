@@ -68,7 +68,7 @@ class NotificationPresenter(private val context: Context,
     private fun buildNotification(): Notification {
         // Can't cache builder because there is no way to remove action from it O_o
         val style = androidx.media.app.NotificationCompat.MediaStyle()
-                .setShowActionsInCompactView(0)
+                //.setShowActionsInCompactView(0)
                 .setShowCancelButton(true)
                 .setCancelButtonIntent(
                         MediaButtonReceiver.buildMediaButtonPendingIntent(

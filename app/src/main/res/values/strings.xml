@@ -43,6 +43,6 @@
 
     <string name="error_server_io_error">Server unavailable</string>
     <string name="error_playback_error">Playback error</string>
-    <string name="error_generic">Generic error</string>
+    <string name="error_generic">Error</string>
 
 </resources>

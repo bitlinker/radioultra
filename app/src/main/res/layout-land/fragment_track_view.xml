@@ -52,9 +52,12 @@
 
         <ImageView
             android:id="@+id/ivCover"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="28dp"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/fragment_track_view_image_cover"
             android:elevation="16dp"
@@ -64,9 +67,9 @@
             app:layout_constraintBottom_toTopOf="@+id/separator1"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/gContentEnd"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/gContentStart"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:layout_constraintWidth_percent="0.75"
             tools:srcCompat="@tools:sample/avatars" />
 
         <View

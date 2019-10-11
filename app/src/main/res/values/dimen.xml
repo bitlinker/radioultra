@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fragment_player_btn_play_size">64dp</dimen>
-    <dimen name="fragment_player_btn_side_size">48dp</dimen>
+    <dimen name="fragment_player_btn_side_size">32dp</dimen>
 
     <dimen name="fragment_track_view_external_icon_size">32dp</dimen>
     <dimen name="fragment_track_view_external_icon_margin">8dp</dimen>
     <dimen name="fragment_track_view_cover_size">200dp</dimen>
+
+    <item name="fragment_player_bottom_bar_size_fraction" format="float" type="dimen">0.8</item>
 </resources>

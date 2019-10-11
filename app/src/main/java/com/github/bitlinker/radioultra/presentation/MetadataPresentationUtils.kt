@@ -53,9 +53,15 @@ fun loadImage(view: TextView, date: Date?) {
     view.text = if (date != null) DATE_FORMAT.format(date) else ""
 }
 
-fun getTitle(trackMetadata: TrackMetadata): String {
+@BindingAdapter("historyItemTitle")
+fun historyItemTitle(view: TextView, trackMetadata: TrackMetadata?) {
+    view.text = getTitle(trackMetadata)
+}
+
+fun getTitle(trackMetadata: TrackMetadata?): String {
+    if (trackMetadata == null) return ""
     if (trackMetadata.artist != null && trackMetadata.title != null) {
-        return "$trackMetadata.artist - $trackMetadata.title"
+        return "${trackMetadata.artist} - ${trackMetadata.title}"
     }
     return trackMetadata.streamTitle ?: ""
 }
@@ -71,7 +77,7 @@ fun getSubtitle(trackMetadata: TrackMetadata): String {
 @BindingAdapter("streamInfoText")
 fun setStreamInfoText(tv: TextView, streamInfo: StreamInfo?) {
     if (streamInfo == null || streamInfo == StreamInfo.EMPTY) {
-        tv.visibility = View.GONE
+        tv.visibility = View.INVISIBLE
     } else {
         tv.visibility = View.VISIBLE
         val sb = StringBuilder()
@@ -94,34 +100,4 @@ fun setStreamInfoText(tv: TextView, streamInfo: StreamInfo?) {
         }
         tv.text = tv.context.getString(R.string.fragment_player_streaminfo_stream, sb.toString())
     }
-}
-
-class MetadataPresentationUtils(private val picasso: Picasso) {
-    // TODO
-
-//    fun getCoverImage(metadata: TrackMetadata): Bitmap {
-//        Single.create {
-//            // TODO: observable?
-//            if (metadata.coverLink == null) {
-//                picasso.load(R.drawable.ultralogo).fetch(object: Callback {
-//                    override fun onSuccess() {
-//
-//                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//                    }
-//
-//                    override fun onError(e: Exception?) {
-//                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//                    }
-//
-//                })
-//                }
-//            } else {
-//                return picasso
-//                        .load(metadata.coverLink)
-//                        .error(R.drawable.ultralogo)
-//                        .get()
-//            }
-//        }
-//
-    //}
 }

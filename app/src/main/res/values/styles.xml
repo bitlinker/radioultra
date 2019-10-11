@@ -43,8 +43,8 @@
         <item name="android:textColor">@color/secondaryTextColor</item>
     </style>
 
-    <style name="PlayerStreamStatusTextStyle" parent="@style/PreferenceThemeOverlay">
-        <item name="android:textSize">16sp</item>
+    <style name="PlayerStreamStatusTextStyle" parent="@style/TextAppearance.AppCompat.Small">
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/secondaryTextColor</item>
     </style>
 </resources>
