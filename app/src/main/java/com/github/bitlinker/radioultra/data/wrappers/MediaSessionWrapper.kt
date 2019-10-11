@@ -131,11 +131,11 @@ class MediaSessionWrapper(private val context: Context,
         val builder = PlaybackStateCompat.Builder()
         when (playerStatus.state) {
             PlayerStatus.State.BUFFERING -> {
-                builder.setActions(PlaybackStateCompat.ACTION_STOP)
+                builder.setActions(PlaybackStateCompat.ACTION_PAUSE)
                 builder.setState(PlaybackStateCompat.STATE_BUFFERING, -1L, 1F)
             }
             PlayerStatus.State.PLAYING -> {
-                builder.setActions(PlaybackStateCompat.ACTION_STOP)
+                builder.setActions(PlaybackStateCompat.ACTION_PAUSE)
                 builder.setState(PlaybackStateCompat.STATE_PLAYING, -1L, 1F)
             }
             PlayerStatus.State.STOPPED -> {
