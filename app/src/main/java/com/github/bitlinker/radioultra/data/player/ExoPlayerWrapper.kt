@@ -17,6 +17,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import io.reactivex.Completable
+import io.reactivex.CompletableSource
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.subjects.BehaviorSubject
@@ -38,8 +39,8 @@ import java.io.Closeable
 // ...
 // Almost ok
 
-class PlayerWrapper(context: Context,
-                    schedulerProvider: SchedulerProvider) : Closeable {
+class ExoPlayerWrapper(context: Context,
+                       schedulerProvider: SchedulerProvider) : Closeable {
     private val player: SimpleExoPlayer
     private val dataSourceFactory: DataSource.Factory
     private val extractorsFactory: ExtractorsFactory
@@ -109,6 +110,16 @@ class PlayerWrapper(context: Context,
                 }
             }
         }
+    }
+
+    fun setBufferTime(time: Long): Completable {
+        // TODO
+        return Completable.complete()
+    }
+
+    fun setUserAgentString(value: String): Completable {
+        // TODO
+        return Completable.complete()
     }
 
     private fun recreatePlayer() {
@@ -194,6 +205,6 @@ class PlayerWrapper(context: Context,
     // TODO: single play method with playing while subscribtion is valid?
 
     override fun close() {
-        player.release();
+        player.release()
     }
 }

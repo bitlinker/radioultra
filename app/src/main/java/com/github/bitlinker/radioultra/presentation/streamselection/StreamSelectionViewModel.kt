@@ -1,14 +1,12 @@
 package com.github.bitlinker.radioultra.presentation.streamselection
 
 import androidx.lifecycle.ViewModel
-import com.github.bitlinker.radioultra.business.player.StreamSelectionInteractor
+import com.github.bitlinker.radioultra.business.ui.StreamSelectionViewInteractor
 import com.github.bitlinker.radioultra.domain.RadioStream
-import com.github.bitlinker.radioultra.presentation.navigation.MainNavigator
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-// TODO: custom navigator?
-class StreamSelectionViewModel(private val navigator: MainNavigator,
-                               private val interactor: StreamSelectionInteractor,
+class StreamSelectionViewModel(private val navigator: StreamSelectionNavigator,
+                               private val interactor: StreamSelectionViewInteractor,
                                private val args: StreamSelectionArgs
 ) : ViewModel() {
     var streams: List<RadioStream> = emptyList()

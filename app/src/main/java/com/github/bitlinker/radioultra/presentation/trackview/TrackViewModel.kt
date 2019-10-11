@@ -3,11 +3,11 @@ package com.github.bitlinker.radioultra.presentation.trackview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import com.github.bitlinker.radioultra.domain.TrackMetadata
+import com.github.bitlinker.radioultra.presentation.common.BaseViewModel
 
 class TrackViewModel(private val trackViewNavigator: TrackViewNavigator,
-                     private val item: TrackMetadata) : ViewModel() {
+                     private val item: TrackMetadata) : BaseViewModel() {
     private val metadata = MutableLiveData<TrackMetadata>()
 
     val title = Transformations.map(metadata) { it.title } as LiveData<String?>

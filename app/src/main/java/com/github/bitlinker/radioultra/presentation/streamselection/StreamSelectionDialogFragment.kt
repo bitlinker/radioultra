@@ -20,12 +20,7 @@ import org.koin.core.parameter.parametersOf
 class StreamSelectionDialogFragment() : DialogFragment(), BackListener {
     private val args: StreamSelectionDialogFragmentArgs by navArgs()
 
-    private lateinit var vm: StreamSelectionViewModel
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        vm = activity!!.currentScope.viewModel<StreamSelectionViewModel>(this, parameters = { parametersOf(args.args) }).value
-    }
+    val vm: StreamSelectionViewModel by currentScope.viewModel(this) { parametersOf(args.args) }
 
     private fun streamToTitle(stream: RadioStream): String {
         return getString(R.string.stream_name, stream.bitrate, stream.id)

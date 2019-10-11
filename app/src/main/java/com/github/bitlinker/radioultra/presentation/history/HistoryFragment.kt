@@ -1,6 +1,5 @@
 package com.github.bitlinker.radioultra.presentation.history
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +8,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.*
-import com.github.bitlinker.radioultra.databinding.FragmentHistoryBinding
-import com.github.bitlinker.radioultra.presentation.BackListener
-import kotlinx.android.synthetic.main.fragment_history.*
-import org.koin.android.viewmodel.ext.android.viewModel
 import com.github.bitlinker.radioultra.R
+import com.github.bitlinker.radioultra.databinding.FragmentHistoryBinding
 import com.github.bitlinker.radioultra.databinding.FragmentHistoryListitemBinding
 import com.github.bitlinker.radioultra.domain.HistoryItem
-import com.github.bitlinker.radioultra.presentation.player.PlayerViewModel
-import com.google.android.material.snackbar.Snackbar
+import com.github.bitlinker.radioultra.presentation.BackListener
+import com.github.bitlinker.radioultra.presentation.common.applyMenuTint
+import kotlinx.android.synthetic.main.fragment_history.*
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.androidx.scope.currentScope
 
 
@@ -54,12 +52,7 @@ class HistoryFragment : Fragment(), BackListener {
     }
 
     private val adapter = HistoryAdapter(this)
-    private lateinit var vm: HistoryViewModel
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        vm = activity!!.currentScope.viewModel<HistoryViewModel>(this).value
-    }
+    val vm: HistoryViewModel by currentScope.viewModel(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<FragmentHistoryBinding>(inflater, R.layout.fragment_history, container, false)
@@ -74,13 +67,10 @@ class HistoryFragment : Fragment(), BackListener {
         rvList.adapter = adapter
         rvList.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
 
+        toolbar.applyMenuTint(true, true)
+
         vm.items.observe(this, Observer {
             adapter.submitList(it)
-        })
-
-        // TODO: common for activity?
-        vm.error.observe(this, Observer {
-            Snackbar.make(swrList, R.string.error_generic, Snackbar.LENGTH_LONG).show()
         })
     }
 

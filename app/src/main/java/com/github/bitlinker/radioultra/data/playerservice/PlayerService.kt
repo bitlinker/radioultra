@@ -1,5 +1,6 @@
 package com.github.bitlinker.radioultra.data.playerservice
 
+import android.app.Service
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
@@ -9,73 +10,61 @@ import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import androidx.media.MediaBrowserServiceCompat
+import androidx.media.session.MediaButtonReceiver
 import com.github.bitlinker.radioultra.R
-import com.github.bitlinker.radioultra.business.notification.PlayerServiceController
-import com.github.bitlinker.radioultra.di.Injector
-import com.github.bitlinker.radioultra.domain.PlayerStatus
-import com.github.bitlinker.radioultra.domain.TrackMetadata
-import io.reactivex.Observable
+import com.github.bitlinker.radioultra.business.playerservice.PlayerServiceApi
+import com.github.bitlinker.radioultra.business.playerservice.PlayerServiceInteractor
+import com.github.bitlinker.radioultra.di.getOrCreateObjectScope
 import io.reactivex.disposables.CompositeDisposable
+import org.koin.android.ext.android.getKoin
 import org.koin.core.scope.Scope
 import timber.log.Timber
 
+
 /**
- * This service is used to keep application alive during playback & mantain notification
- * Notification control intents are also handled here
- *
- * acts like viewmodel here...
+ * This service is used to keep application alive during playback & maintain foreground control notification
  */
 
 private const val ROOT_MEDIA_ID = "ROOT_MEDIA_ID"
+private const val RADIO_MEDIA_ID = "RADIO_MEDIA_ID"
 
 class PlayerService : MediaBrowserServiceCompat() {
     inner class LocalBinder : Binder() {
-        fun getService() = object : PlayerServiceInterface {
-            override fun play() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun stop() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun pause() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun playerStatus(): Observable<PlayerStatus> {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun metadata(): Observable<TrackMetadata> {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        }
+        fun getServiceApi() = interactor as PlayerServiceApi
     }
 
-    private lateinit var playerScope: Scope
-    private lateinit var controller: PlayerServiceController
+    private lateinit var scope: Scope
+    private lateinit var interactor: PlayerServiceInteractor
+    private val disposable = CompositeDisposable()
+
     private val binder = LocalBinder()
-
-
-    // TODO: use controller here
-    // TODO: stop service when no ui & notification destroyed? or on cancel?
-
-    // Stop with notification cancellation event
-    // Or when exiting from ui with not playing state
 
     override fun onBind(intent: Intent?): IBinder? {
         return binder
     }
 
     override fun onCreate() {
+        scope = getOrCreateObjectScope(getKoin())
+        interactor = scope.get(PlayerServiceInteractor::class.java)
         super.onCreate()
         Timber.d("onCreate");
-        playerScope = Injector.instance.openPlayerScope("player_scope_id") // TODO: id here
 
-        controller = playerScope.get()
+        disposable.add(
+                interactor.bindToService(this)
+                        .subscribe()
+        )
 
-        sessionToken = controller.getMediaSessionRepo().getToken()
+        sessionToken = interactor.getMediaSessionNow().sessionToken
+    }
+
+    fun startMe() {
+        Timber.d("Starting self")
+        startService(Intent(applicationContext, PlayerService::class.java))
+    }
+
+    fun stopMe() {
+        Timber.d("Stopping self")
+        stopSelf()
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
@@ -94,10 +83,15 @@ class PlayerService : MediaBrowserServiceCompat() {
                         .appendPath(resources.getResourceEntryName(iconRes))
                         .build()
                 )
-                .setMediaId(controller.getMediaId())
+                .setMediaId(RADIO_MEDIA_ID)
 
         val item = MediaBrowserCompat.MediaItem(descriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
         result.sendResult(mutableListOf(item))
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        MediaButtonReceiver.handleIntent(interactor.getMediaSessionNow(), intent)
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
@@ -105,9 +99,9 @@ class PlayerService : MediaBrowserServiceCompat() {
     }
 
     override fun onDestroy() {
-        Timber.d("dispose");
-        controller.dispose()
-        playerScope.close()
+        Timber.d("onDestroy");
+        disposable.clear()
+        scope.close()
         super.onDestroy()
     }
 }

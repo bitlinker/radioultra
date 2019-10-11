@@ -26,7 +26,7 @@ class RadioMetadataRepository(private val schedulerProvider: SchedulerProvider) 
     init {
         val config = HostingRadioApi.Config()
         config.scheduler = schedulerProvider.io()
-        config.configUrl = HostingRadioApi.Config.CONFIG_URL_ULTRA
+        config.baseUrl = HostingRadioApi.Config.BASE_URL_ULTRA
         config.configCacheTimeMs = CONFIG_CACHE_TIMEOUT
         hostingRadioApi = HostingRadioApi(config)
     }
@@ -57,7 +57,7 @@ class RadioMetadataRepository(private val schedulerProvider: SchedulerProvider) 
                             )
                     )
                 }
-                .toSortedList(kotlin.Comparator { o1, o2 ->
+                .toSortedList({ o1, o2 ->
                     ((o2.date?.time ?: 0L) - (o1.date?.time ?: 0L)).toInt()
                 })
                 .toObservable()

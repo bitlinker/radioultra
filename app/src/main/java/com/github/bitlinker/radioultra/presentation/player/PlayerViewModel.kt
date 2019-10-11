@@ -4,26 +4,24 @@ import android.view.MenuItem
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import com.github.bitlinker.radioultra.R
-import com.github.bitlinker.radioultra.business.common.StartupInteractor
-import com.github.bitlinker.radioultra.business.common.PlayerInteractor
+import com.github.bitlinker.radioultra.business.ui.PlayerViewInteractor
+import com.github.bitlinker.radioultra.data.schedulers.SchedulerProvider
 import com.github.bitlinker.radioultra.domain.PlayerStatus
 import com.github.bitlinker.radioultra.domain.StreamInfo
 import com.github.bitlinker.radioultra.domain.TrackMetadata
-import com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionArgs
-import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
+import com.github.bitlinker.radioultra.presentation.common.BaseViewModel
+import com.github.bitlinker.radioultra.presentation.common.ErrorDisplayerMgr
 import timber.log.Timber
 
-// TODO: how to inflate models with different args?
+// TODO: databinding hates nulls! - check metadata!
+// TODO: remove databinding, use viewbinding from Jake!
 
-class PlayerViewModel(private val navigator: PlayerNavigator,
-                      private val interactor: PlayerInteractor,
-                      private val startupInteractor: StartupInteractor,
-                      private val uiScheduler: Scheduler) : ViewModel() {
-    private val disposable = CompositeDisposable()
-
+class PlayerViewModel(private val navigator: PlayerViewNavigator,
+                      private val interactor: PlayerViewInteractor,
+                      private val schedulerProvider: SchedulerProvider,
+                      private val errorDisplayerMgr: ErrorDisplayerMgr
+) : BaseViewModel() {
     private val metadata = MutableLiveData<TrackMetadata>()
 
     val title = Transformations.map(metadata) { it.title } as LiveData<String?>
@@ -36,71 +34,53 @@ class PlayerViewModel(private val navigator: PlayerNavigator,
     init {
         playButtonState.value = PlayButtonState.STOPPED
 
-        disposable.add(
-                interactor.getMetadata()
-                        .observeOn(uiScheduler)
-                        .subscribe(
-                                {
-                                    Timber.d("Metadata: ${it.toString()}")
-                                    metadata.value = it
-                                },
-                                { showError(it) }
-                        )
-        )
-
-        disposable.add(startupInteractor.onStartup()
-                .observeOn(uiScheduler)
+        interactor.getTrackMetadata()
+                .observeOn(schedulerProvider.ui())
                 .subscribe(
-                        {},
-                        { showError(it) }
+                        {
+                            Timber.d("Metadata: $it")
+                            metadata.value = it
+                        },
+                        { errorDisplayerMgr.showError(it) }
                 )
-        )
+                .connect()
 
-        disposable.add(interactor.getState()
-                .observeOn(uiScheduler)
+        interactor.getState()
+                .observeOn(schedulerProvider.ui())
                 .subscribe(
                         {
                             playButtonState.value = when (it.state) {
                                 PlayerStatus.State.STOPPED -> PlayButtonState.STOPPED
                                 PlayerStatus.State.STOPPED_ERROR -> {
-                                    showError(it.throwable)
+                                    errorDisplayerMgr.showError(it.throwable)
                                     PlayButtonState.STOPPED
                                 }
                                 PlayerStatus.State.BUFFERING -> PlayButtonState.BUFFERING
                                 PlayerStatus.State.PLAYING -> PlayButtonState.PLAYING
                             }
                         },
-                        { showError(it) }
+                        { errorDisplayerMgr.showError(it) }
                 )
-        )
+                .connect()
 
-        disposable.add(interactor.getCurrentStreamInfo()
-                .observeOn(uiScheduler)
+        interactor.getCurrentStreamInfo()
+                .observeOn(schedulerProvider.ui())
                 .subscribe(
                         { streamInfo.value = it },
-                        { showError(it) }
+                        { errorDisplayerMgr.showError(it) }
                 )
-        )
-    }
-
-    // TODO: databinding hates nulls!
-
-    // TODO: custom error types
-    fun showError(error: Throwable?) {
-        Timber.e(error)
-        // TODO: show error (activity interface)
+                .connect()
     }
 
     fun onHistoryClicked() = navigator.navigateToHistory()
 
     fun onChooseStreamClicked() {
-        disposable.add(
-                interactor.getStreamSelectionArgs()
-                        .subscribe(
-                                { navigator.showChooseStreamDialog(it) },
-                                { showError(it) }
-                        )
-        )
+        interactor.getStreamSelectionArgs()
+                .subscribe(
+                        { navigator.showChooseStreamDialog(it) },
+                        { errorDisplayerMgr.showError(it) }
+                )
+                .connect()
     }
 
     fun onMenuItemClicked(item: MenuItem): Boolean {
@@ -117,23 +97,15 @@ class PlayerViewModel(private val navigator: PlayerNavigator,
     }
 
     fun onPlayStopClicked() {
-        val newState: PlayButtonState
-        if (playButtonState.value == PlayButtonState.STOPPED) {
-            newState = PlayButtonState.PLAYING
-            disposable.add(interactor.play().subscribe())
-        } else {
-            newState = PlayButtonState.STOPPED
-            disposable.add(interactor.stop().subscribe()) // TODO: disposable, error-handling
-        }
-        playButtonState.postValue(newState)
+        interactor.togglePlayStop()
+                .subscribe(
+                        {},
+                        { errorDisplayerMgr.showError(it) }
+                )
+                .connect()
     }
 
     fun onBackPressed() {
         navigator.onBackPressed()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        disposable.dispose()
     }
 }

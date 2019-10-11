@@ -68,6 +68,34 @@ fun getSubtitle(trackMetadata: TrackMetadata): String {
     return trackMetadata.album ?: ""
 }
 
+@BindingAdapter("streamInfoText")
+fun setStreamInfoText(tv: TextView, streamInfo: StreamInfo?) {
+    if (streamInfo == null || streamInfo == StreamInfo.EMPTY) {
+        tv.visibility = View.GONE
+    } else {
+        tv.visibility = View.VISIBLE
+        val sb = StringBuilder()
+        if (streamInfo.bitrate != null) {
+            sb.append(tv.context.getString(R.string.fragment_player_streaminfo_bitrate, streamInfo.bitrate / 1000))
+            sb.append(' ')
+        }
+        if (streamInfo.sampleRate != null) {
+            sb.append(tv.context.getString(R.string.fragment_player_streaminfo_samplerate, streamInfo.sampleRate / 1000F))
+            sb.append(' ')
+        }
+        if (streamInfo.channels != null) {
+            when (streamInfo.channels) {
+                1 -> sb.append(tv.context.getString(R.string.fragment_player_streaminfo_mono))
+                2 -> sb.append(tv.context.getString(R.string.fragment_player_streaminfo_stereo))
+                else -> {
+                }
+            }
+            sb.append(' ')
+        }
+        tv.text = tv.context.getString(R.string.fragment_player_streaminfo_stream, sb.toString())
+    }
+}
+
 class MetadataPresentationUtils(private val picasso: Picasso) {
     // TODO
 
@@ -96,33 +124,4 @@ class MetadataPresentationUtils(private val picasso: Picasso) {
 //        }
 //
     //}
-
-
-    @BindingAdapter("streamInfoText")
-    fun setStreamInfoText(tv: TextView, streamInfo: StreamInfo?) {
-        if (streamInfo == null || streamInfo == StreamInfo.EMPTY) {
-            tv.visibility = View.GONE
-        } else {
-            tv.visibility = View.VISIBLE
-            val sb = StringBuilder()
-            if (streamInfo.bitrate != null) {
-                sb.append(tv.context.getString(R.string.fragment_player_streaminfo_bitrate, streamInfo.bitrate / 1000))
-                sb.append(' ')
-            }
-            if (streamInfo.sampleRate != null) {
-                sb.append(tv.context.getString(R.string.fragment_player_streaminfo_samplerate, streamInfo.sampleRate / 1000F))
-                sb.append(' ')
-            }
-            if (streamInfo.channels != null) {
-                when (streamInfo.channels) {
-                    1 -> sb.append(tv.context.getString(R.string.fragment_player_streaminfo_mono))
-                    2 -> sb.append(tv.context.getString(R.string.fragment_player_streaminfo_stereo))
-                    else -> {
-                    }
-                }
-                sb.append(' ')
-            }
-            tv.text = tv.context.getString(R.string.fragment_player_streaminfo_stream, sb.toString())
-        }
-    }
 }

@@ -1,12 +1,23 @@
 <resources>
     <string name="app_name">Radio Ultra</string>
 
+    <string name="notification_player_channel_name">@string/app_name</string>
+    <string name="notification_player_channel_description">Player notification channel"</string>
+    <string name="notification_player_action_play">Play</string>
+    <string name="notification_player_action_stop">Stop</string>
+
+    <string name="switch_on">On</string>
+    <string name="switch_off">Off</string>
+
     <string name="mediabrowser_title">@string/app_name</string>
 
     <string name="title_settings">Settings</string>
     <string name="fragment_settings_download_album_coverts_title">Download album covers</string>
     <string name="fragment_settings_custom_useragent_string">Custom UserAgent string</string>
     <string name="fragment_settings_play_on_startup">Play on startup</string>
+    <string name="fragment_settings_stopped_metadata_update_interval">Web metadata update interval, sec</string>
+    <string name="fragment_settings_buffering_time">Buffering time, sec</string>
+    <string name="fragment_settings_version">Version</string>
 
     <string name="title_history">History</string>
 

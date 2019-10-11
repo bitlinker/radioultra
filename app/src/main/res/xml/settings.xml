@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:defaultValue="@string/pref_key_download_album_covers_default"
-        android:key="@string/pref_key_download_album_covers"
-        android:title="@string/fragment_settings_download_album_coverts_title" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="@string/pref_key_download_album_covers"
+        app:title="@string/fragment_settings_download_album_coverts_title" />
 
-    <CheckBoxPreference
-        android:defaultValue="@string/pref_key_play_on_startup_default"
-        android:key="@string/pref_key_play_on_startup"
-        android:title="@string/fragment_settings_play_on_startup" />
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:key="@string/pref_key_play_on_startup"
+        app:title="@string/fragment_settings_play_on_startup" />
 
-    <!--<EditTextPreference-->
-        <!--android:defaultValue="@string/pref_key_useragent_string_default"-->
-        <!--android:key="@string/pref_key_useragent_string"-->
-        <!--android:selectAllOnFocus="true"-->
-        <!--android:singleLine="true"-->
-        <!--android:title="@string/fragment_settings_custom_useragent_string" />-->
+    <EditTextPreference
+        app:defaultValue="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
+        app:key="@string/pref_key_useragent_string"
+        app:title="@string/fragment_settings_custom_useragent_string" />
 
-    <!--<EditTextPreference-->
-        <!--android:defaultValue="5000"-->
-        <!--android:inputType="numberDecimal|numberSigned"-->
-        <!--android:key="edit_text_preference_1"-->
-        <!--android:selectAllOnFocus="true"-->
-        <!--android:singleLine="true"-->
-        <!--android:title="Buffering time" />-->
+    <EditTextPreference
+        app:defaultValue="30"
+        app:key="@string/pref_key_stopped_metadata_update_interval"
+        app:title="@string/fragment_settings_stopped_metadata_update_interval" />
 
-    <ListPreference
-        android:defaultValue="1"
-        android:entries="@android:array/imProtocols"
-        android:entryValues="@android:array/imProtocols"
-        android:key="pref_theme"
-        android:title="Theme" />
+    <EditTextPreference
+        app:defaultValue="5"
+        app:key="@string/pref_key_buffering_time"
+        app:title="@string/fragment_settings_buffering_time" />
+
+    <Preference
+        app:key="@string/pref_key_version"
+        app:title="@string/fragment_settings_version"/>
 </PreferenceScreen>

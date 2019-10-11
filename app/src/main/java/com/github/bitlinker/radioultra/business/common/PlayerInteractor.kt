@@ -1,67 +1,58 @@
 package com.github.bitlinker.radioultra.business.common
 
-import com.github.bitlinker.radioultra.business.player.StreamSelectionInteractor
-import com.github.bitlinker.radioultra.data.player.PlayerWrapper
-import com.github.bitlinker.radioultra.data.settings.SettingsRepository
-import com.github.bitlinker.radioultra.data.wrappers.WakelockWrapper
-import com.github.bitlinker.radioultra.domain.RadioStream
+import android.support.v4.media.session.MediaSessionCompat
+import com.github.bitlinker.radioultra.business.playerservice.PlayerServiceApi
+import com.github.bitlinker.radioultra.data.playerservice.PlayerServiceConnector
+import com.github.bitlinker.radioultra.domain.PlayerStatus
+import com.github.bitlinker.radioultra.domain.StreamInfo
 import com.github.bitlinker.radioultra.domain.TrackMetadata
-import com.github.bitlinker.radioultra.presentation.streamselection.StreamSelectionArgs
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 
+/**
+ * Works with remote player service & repository
+ */
+class PlayerInteractor(
+        private val connector: PlayerServiceConnector
+) : PlayerServiceApi {
 
-// TODO: separate playerInteractor & playerFragmentInteractor
-class PlayerInteractor(private val streamSelectionInteractor: StreamSelectionInteractor,
-                       private val metadataInteractor: MetadataInteractor,
-                       private val playerWrapper: PlayerWrapper,
-                       private val wakelockWrapper: WakelockWrapper,
-                       private val settingsRepository: SettingsRepository) {
-
-    // TODO: wakelock with player
-    // service run/stop
-    // notifcation update with metadata? in service?
-
-    fun play(): Completable {
-        // TODO: update useragent if needed
-        //settingsRepository.userAgentStringObservable()
-        return getCurrentStream()
-                .flatMapCompletable { play(it) }
+    fun bind(): Completable {
+        return connector.bind()
     }
 
-    fun play(stream: RadioStream): Completable {
-        return playerWrapper.play(stream)
-        //wakelockWrapper.aquirePlayerLock()
+    override fun getMediaSessionToken(): Single<MediaSessionCompat.Token> {
+        return connector.getSingleConnection()
+                .flatMap { it.getMediaSessionToken() }
     }
 
-    fun stop(): Completable {
-        return playerWrapper.stop()
+    override fun getTrackMetadata(): Observable<TrackMetadata> {
+        return connector.getConnection()
+                .switchMap { it.getTrackMetadata() }
     }
 
-    fun getState() = playerWrapper.getPlayerStatus()
-
-    fun getCurrentStreamInfo() = playerWrapper.getStreamInfo()
-
-    private fun getCurrentStream() = streamSelectionInteractor.getCurStream()
-
-    fun getStreamSelectionArgs(): Single<StreamSelectionArgs> {
-        return Single.zip(
-                streamSelectionInteractor.getStreams().toList(),
-                getCurrentStream(),
-                BiFunction { list, current -> StreamSelectionArgs(list, current) }
-        )
+    override fun play(): Completable {
+        return connector.getSingleConnection()
+                .flatMapCompletable { it.play() }
     }
 
-    fun getMetadata(): Observable<TrackMetadata> {
-        return Observable.combineLatest(
-                metadataInteractor.getCurrentTrackMetadata(),
-                settingsRepository.isDownloadCoverObservable(),
-                BiFunction { metadata, isDownloadCover ->
-                    if (isDownloadCover) metadata
-                    else metadata.copy(coverLink = null)
-                }
-        )
+    override fun stop(): Completable {
+        return connector.getSingleConnection()
+                .flatMapCompletable { it.stop() }
+    }
+
+    override fun togglePlayStop(): Completable {
+        return connector.getSingleConnection()
+                .flatMapCompletable { it.togglePlayStop() }
+    }
+
+    override fun getPlayerStatus(): Observable<PlayerStatus> {
+        return connector.getConnection()
+                .switchMap { it.getPlayerStatus() }
+    }
+
+    override fun getStreamInfo(): Observable<StreamInfo> {
+        return connector.getConnection()
+                .switchMap { it.getStreamInfo() }
     }
 }

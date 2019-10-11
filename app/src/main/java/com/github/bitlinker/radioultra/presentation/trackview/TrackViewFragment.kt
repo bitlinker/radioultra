@@ -1,6 +1,5 @@
 package com.github.bitlinker.radioultra.presentation.trackview
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,18 +10,15 @@ import androidx.navigation.fragment.navArgs
 import com.github.bitlinker.radioultra.R
 import com.github.bitlinker.radioultra.databinding.FragmentTrackViewBinding
 import com.github.bitlinker.radioultra.presentation.BackListener
+import com.github.bitlinker.radioultra.presentation.common.applyMenuTint
+import kotlinx.android.synthetic.main.fragment_track_view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.androidx.scope.currentScope
 import org.koin.core.parameter.parametersOf
 
 class TrackViewFragment : Fragment(), BackListener {
     private val args: TrackViewFragmentArgs by navArgs()
-    private lateinit var vm: TrackViewModel
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        vm = activity!!.currentScope.viewModel<TrackViewModel>(this, parameters = { parametersOf(args.item) }).value
-    }
+    val vm: TrackViewModel by currentScope.viewModel(this) { parametersOf(args.item) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<FragmentTrackViewBinding>(inflater, R.layout.fragment_track_view, container, false)
@@ -31,7 +27,10 @@ class TrackViewFragment : Fragment(), BackListener {
         return binding.root
     }
 
-    override fun onBackPressed() = vm.onBackPressed()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar.applyMenuTint(true, true)
+    }
 
-    // TODO: common class for fragments? No, settings
+    override fun onBackPressed() = vm.onBackPressed()
 }

@@ -1,24 +1,26 @@
 package com.github.bitlinker.radioultra.presentation.history
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.github.bitlinker.radioultra.business.history.HistoryFragmentInteractor
+import com.github.bitlinker.radioultra.business.ui.HistoryViewInteractor
 import com.github.bitlinker.radioultra.data.schedulers.SchedulerProvider
 import com.github.bitlinker.radioultra.domain.HistoryItem
-import io.reactivex.disposables.CompositeDisposable
-import timber.log.Timber
+import com.github.bitlinker.radioultra.presentation.common.BaseViewModel
+import com.github.bitlinker.radioultra.presentation.common.ErrorDisplayerMgr
 
-// TODO: offline history & delete all feature?
+// TODO: offline history & delete all features
 class HistoryViewModel(private val navigator: HistoryNavigator,
-                       private val historyFragmentInteractor: HistoryFragmentInteractor,
-                       private val schedulerProvider: SchedulerProvider) : ViewModel() {
-    val disposable = CompositeDisposable()
+                       private val interactor: HistoryViewInteractor,
+                       private val schedulerProvider: SchedulerProvider,
+                       private val errorDisplayerMgr: ErrorDisplayerMgr) : BaseViewModel() {
+    private val _refreshing = MutableLiveData<Boolean>()
+    private val _items = MutableLiveData<List<HistoryItem>>()
 
-    // TODO: expose simple livedata?
-    val refreshing = MutableLiveData<Boolean>()
-    val items = MutableLiveData<List<HistoryItem>>()
-    val error = MutableLiveData<Throwable>()
-    // TODO: how to show error?
+    val refreshing: LiveData<Boolean>
+        get() = _refreshing
+
+    val items: LiveData<List<HistoryItem>>
+        get() = _items
 
     init {
         doRefresh()
@@ -29,29 +31,21 @@ class HistoryViewModel(private val navigator: HistoryNavigator,
     }
 
     fun doRefresh() {
-        disposable.add(historyFragmentInteractor.getHistory()
+        interactor.getHistory()
                 .observeOn(schedulerProvider.ui())
                 .toList()
-                .doOnSubscribe { refreshing.value = true }
-                .doFinally { refreshing.value = false }
+                .doOnSubscribe { _refreshing.value = true }
+                .doFinally { _refreshing.value = false }
                 .subscribe(
-                        { items.value = it },
-                        { throwable ->
-                            Timber.e(throwable)
-                            error.value = throwable
-                        }
+                        { _items.value = it },
+                        { throwable -> errorDisplayerMgr.showError(throwable) }
                 )
-        )
+                .connect()
     }
 
     fun onRefresh() = doRefresh()
 
     fun onItemClicked(item: HistoryItem) {
         navigator.navigateToItem(item.metadata)
-    }
-
-    override fun onCleared() {
-        disposable.clear()
-        super.onCleared()
     }
 }
