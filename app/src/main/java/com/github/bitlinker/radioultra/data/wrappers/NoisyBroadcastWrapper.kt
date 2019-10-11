@@ -6,6 +6,7 @@ import android.media.AudioManager
 import com.github.bitlinker.radioultra.data.schedulers.SchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import timber.log.Timber
 
 class NoisyBroadcastWrapper(
         private val context: Context,
@@ -13,6 +14,7 @@ class NoisyBroadcastWrapper(
     fun noisyBroadcastReceiverObservable(): Observable<Boolean> {
         return broadcastReceiverObservable(context, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY), schedulerProvider.ui())
                 .filter { AudioManager.ACTION_AUDIO_BECOMING_NOISY == it.action }
+                .doOnNext { Timber.d("Noisy broadcast triggered") }
                 .map { true }
     }
 }

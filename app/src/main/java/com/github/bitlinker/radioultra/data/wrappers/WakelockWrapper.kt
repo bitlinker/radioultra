@@ -5,11 +5,9 @@ import android.content.Context
 import android.os.PowerManager
 import com.github.bitlinker.radioultra.data.schedulers.SchedulerProvider
 import io.reactivex.Completable
-import io.reactivex.Scheduler
-import io.reactivex.Single
 import timber.log.Timber
 
-class WakelockWrapper(private val context: Context,
+class WakelockWrapper(context: Context,
                       private val schedulerProvider: SchedulerProvider) {
     private val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 

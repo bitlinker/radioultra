@@ -194,11 +194,11 @@ class PlayerServiceInteractor(
      * Acquires audiofocus and affects playback state if changed
      */
     private fun bindAudiofocusToPausePlayback(): Completable {
-        return Completable.never() // TODO
-        /*return doWhenPlaybackIsActive(
-                //if (it) audioFocusWrapper.request() // TODO: reactive api
-                Completable.never()
-        )*/
+        return audioFocusWrapper.request()
+                .filter {
+                    it == AudioFocusWrapper.State.LOSS || it == AudioFocusWrapper.State.LOSS_TRANSIENT || it == AudioFocusWrapper.State.LOSS_TRANSIENT_CAN_DUCK
+                }
+                .flatMapCompletable { stop() }
     }
 
     /**

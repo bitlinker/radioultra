@@ -24,21 +24,6 @@ import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 import java.io.Closeable
 
-
-// TODO: interface:
-// Rename to repository
-// play(stream),
-// stop
-// pause
-// state (+paused?) observable
-// icy metdata observable
-// stream params observable
-// set useragent
-// set buffer size
-// sync api? easier
-// ...
-// Almost ok
-
 class ExoPlayerWrapper(context: Context,
                        schedulerProvider: SchedulerProvider) : Closeable {
     private val player: SimpleExoPlayer
@@ -180,10 +165,9 @@ class ExoPlayerWrapper(context: Context,
         }.subscribeOn(scheduler)
     }
 
-    // TODO
     private fun mapError(throwable: Throwable): Throwable {
         if (throwable is HttpDataSource.HttpDataSourceException) {
-            // TODOO
+            // TODO
         } else if (throwable is HttpDataSource.InvalidResponseCodeException) {
             //throwable.responseCode
         }
@@ -197,12 +181,11 @@ class ExoPlayerWrapper(context: Context,
         return Completable.fromCallable {
             player.setPlayWhenReady(false)
             player.stop()
-            // TODO: update subjects
+            playerStatus.onNext(PlayerStatus(PlayerStatus.State.STOPPED))
+            streamInfo.onNext(StreamInfo.EMPTY)
         }
                 .subscribeOn(scheduler)
     }
-
-    // TODO: single play method with playing while subscribtion is valid?
 
     override fun close() {
         player.release()
