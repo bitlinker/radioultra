@@ -24,9 +24,9 @@ class PlayerViewModel(private val navigator: PlayerViewNavigator,
 ) : BaseViewModel() {
     private val metadata = MutableLiveData<TrackMetadata>()
 
-    val title = Transformations.map(metadata) { it.title } as LiveData<String?>
-    val artist = Transformations.map(metadata) { it.artist } as LiveData<String?>
-    val coverUrl = Transformations.map(metadata) { it.coverLink } as LiveData<String?>
+    val title = Transformations.map(metadata) { it.title }
+    val artist = Transformations.map(metadata) { it.artist }
+    val coverUrl = Transformations.map(metadata) { it.coverLink }
 
     val playButtonState = MutableLiveData<PlayButtonState>()
     val streamInfo = MutableLiveData<StreamInfo>()
